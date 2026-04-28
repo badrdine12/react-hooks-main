@@ -9,7 +9,7 @@
  *   { id, title, price, thumbnail, rating, category, ... }
  */
 export default function ProductCard({ product, onAddToCart }) {
-  const { title, price, thumbnail, rating } = product
+  const { title, price, thumbnail, rating } = product;
 
   return (
     <div className="card h-100 shadow-sm">
@@ -17,7 +17,7 @@ export default function ProductCard({ product, onAddToCart }) {
         src={thumbnail}
         className="card-img-top"
         alt={title}
-        style={{ height: 200, objectFit: 'cover' }}
+        style={{ height: 200, objectFit: "cover" }}
       />
       <div className="card-body d-flex flex-column">
         <h6 className="card-title">{title}</h6>
@@ -34,11 +34,11 @@ export default function ProductCard({ product, onAddToCart }) {
             ============================================================= */}
         <button
           className="btn btn-primary btn-sm"
-          onClick={undefined /* TODO */}
+          onClick={() => onAddToCart(product)}
         >
           <i className="bi bi-cart-plus me-1"></i>Ajouter au panier
         </button>
       </div>
     </div>
-  )
+  );
 }
