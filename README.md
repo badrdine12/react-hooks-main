@@ -128,7 +128,7 @@ Cliquer sur le bouton « Panier » puis sur « Fermer ».
 Joindre une capture montrant la modale ouverte (panier vide).
 
 <!-- RÉPONSE Q1.3 — insérer l'image ci-dessous -->
-![panier vide](image.png)
+![panier vide](docs/screenshots/image.png)
 
 ---
 
@@ -180,7 +180,7 @@ Coller ici la partie JSX du `.map()` dans `ProductList`.
 ### Q2.3 — Capture d'écran : la grille avec le produit fictif
 
 <!-- RÉPONSE Q2.3 -->
-![Grille de produits](image-1.png)
+![Grille de produits](docs/screenshots/image1.png)
 
 ---
 
@@ -204,6 +204,15 @@ Expliquer pourquoi on ne peut pas placer un `fetch()` directement dans le corps
 du composant (ou du hook). Quel problème cela provoquerait-il ?
 
 <!-- RÉPONSE Q3.1 -->
+Problème sans useEffect :
+  Si vous placez fetch() directement dans le corps du composant ou du hook, il s'exécute à chaque rendu. Cela crée une boucle infinie :
+
+  Composant rend → fetch() lancé → données arrivent → composant rend (mise à jour d'état) → fetch() relancé → boucle...
+Avec useEffect :
+
+  useEffect(() => {
+    fetch(url).then(...)  // S'exécute seulement aux moments contrôlés
+  }, [searchQuery, page])  // Seulement quand ces dépendances changent
 
 ---
 
@@ -213,7 +222,7 @@ Que se passerait-il si ce tableau était vide `[]` ?
 Et si on l'omettait complètement ?
 
 <!-- RÉPONSE Q3.2 -->
-
+  Le tableau de dépendances indique à React quand réexécuter l'effet. L'effet se relance seulement si l'une de ces valeurs change.
 ---
 
 ### Q3.3 — Montrer votre implémentation du `useEffect` dans `useProducts`
@@ -221,6 +230,35 @@ Et si on l'omettait complètement ?
 ```js
 // RÉPONSE Q3.3 — votre useEffect ici
 
+useEffect(() => {
+  const fetchProducts = async () => {
+    setLoading(true)
+    setError(null)
+
+    const skip = (page - 1) * PAGE_SIZE
+
+    let url = ''
+    if (searchQuery && searchQuery.trim() !== '') {
+      url = `${BASE_URL}/search?q=${searchQuery}&limit=${PAGE_SIZE}&skip=${skip}`
+    } else {
+      url = `${BASE_URL}?limit=${PAGE_SIZE}&skip=${skip}`
+    }
+
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+
+      setProducts(data.products)
+      setTotal(data.total)
+    } catch (error) {
+      setError('Erreur lors du chargement des produits', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchProducts()
+}, [searchQuery, page])
 ```
 
 ---
@@ -230,7 +268,7 @@ Et si on l'omettait complètement ?
 Joindre une capture montrant la page 2 chargée.
 
 <!-- RÉPONSE Q3.4 -->
-![Produits page 2](docs/screenshots/step3-page2.png)
+![Produits page 2](docs/screenshots/produit%20avec%20pagination.png)
 
 ---
 
