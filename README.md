@@ -63,7 +63,7 @@ Expliquer en 2-3 phrases le rôle de `useState` et pourquoi React nécessite ce
 hook plutôt qu'une simple variable JavaScript.
 
 <!-- RÉPONSE Q1.1 -->
-
+useState permet de stocker et gérer des données dynamiques dans un composant React (comme une recherche, une page ou l’état d’une modal).
 ---
 
 ### Q1.2 — Montrer votre implémentation des trois `useState`
@@ -72,7 +72,52 @@ Coller ici l'extrait de code correspondant aux trois déclarations d'état dans 
 
 ```jsx
 // RÉPONSE Q1.2 — vos trois useState ici
+import { useState } from 'react'
+import NavBar from './components/NavBar/NavBar.jsx'
+import Footer from './components/Footer/Footer.jsx'
+import ProductList from './components/ProductList/ProductList.jsx'
+import CartModal from './components/CartModal/CartModal.jsx'
 
+export default function App() {
+  // ✅ Étape 1 — useState
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  return (
+    <div className="d-flex flex-column min-vh-100">
+      <NavBar
+        searchQuery={searchQuery}
+        onSearchChange={(_value) => {
+          setSearchQuery(_value)
+          setCurrentPage(1)
+        }}
+        onCartClick={() => {
+          setIsCartOpen(true)
+        }}
+      />
+
+      <main className="flex-grow-1 container py-4">
+        <ProductList
+          searchQuery={searchQuery}
+          currentPage={currentPage}
+          onPageChange={(_page) => {
+            setCurrentPage(_page)
+          }}
+        />
+      </main>
+
+      <Footer />
+
+      <CartModal
+        isOpen={isCartOpen}
+        onClose={() => {
+          setIsCartOpen(false)
+        }}
+      />
+    </div>
+  )
+}
 ```
 
 ---
@@ -83,7 +128,7 @@ Cliquer sur le bouton « Panier » puis sur « Fermer ».
 Joindre une capture montrant la modale ouverte (panier vide).
 
 <!-- RÉPONSE Q1.3 — insérer l'image ci-dessous -->
-![Modale ouverte](docs/screenshots/step1-modal.png)
+![panier vide](image.png)
 
 ---
 
@@ -112,7 +157,7 @@ et `src/components/ProductList/ProductList.jsx`
 Expliquer en 2-3 phrases. Pourquoi pose-t-il problème quand l'arbre de composants est profond ?
 
 <!-- RÉPONSE Q2.1 -->
-
+Le problème du prop drilling : quand l'arbre de composants est profond, il faut passer addToCart et d'autres données à travers chaque niveau intermédiaire (ProductList → ProductCard → ...) même si les composants du milieu n'en ont pas besoin. C'est verbeux et fragil
 ---
 
 ### Q2.2 — Montrer le rendu de la grille
@@ -121,7 +166,13 @@ Coller ici la partie JSX du `.map()` dans `ProductList`.
 
 ```jsx
 // RÉPONSE Q2.2 — votre map ici
-
+                <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+                  {products.map(product => (
+                    <div key={product.id} className="col">
+                      <ProductCard product={product} onAddToCart={addToCart} />
+                    </div>
+                  ))}
+                </div>
 ```
 
 ---
@@ -129,7 +180,7 @@ Coller ici la partie JSX du `.map()` dans `ProductList`.
 ### Q2.3 — Capture d'écran : la grille avec le produit fictif
 
 <!-- RÉPONSE Q2.3 -->
-![Grille de produits](docs/screenshots/step2-grid.png)
+![Grille de produits](image-1.png)
 
 ---
 
