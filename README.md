@@ -180,7 +180,7 @@ Coller ici la partie JSX du `.map()` dans `ProductList`.
 ### Q2.3 — Capture d'écran : la grille avec le produit fictif
 
 <!-- RÉPONSE Q2.3 -->
-![Grille de produits](docs/screenshots/image1.png)
+![Grille de produits](docs/screenshots/image-1.png)
 
 ---
 
@@ -293,7 +293,7 @@ Passer `debouncedQuery` (et non `searchQuery`) à `ProductList`.
 Décrire ce qui se passerait sans debounce quand l'utilisateur tape rapidement.
 
 <!-- RÉPONSE Q4.1 -->
-
+  Le debounce permet de retarder une action jusqu’à ce que l’utilisateur arrête de taper.
 ---
 
 ### Q4.2 — Quel est le rôle de la fonction de nettoyage (cleanup) retournée par `useEffect` ?
@@ -301,7 +301,7 @@ Décrire ce qui se passerait sans debounce quand l'utilisateur tape rapidement.
 Expliquer pourquoi `return () => clearTimeout(timer)` est indispensable dans ce cas précis.
 
 <!-- RÉPONSE Q4.2 -->
-
+  Le cleanup sert à annuler l’ancien timer.
 ---
 
 ### Q4.3 — Montrer votre implémentation complète de `useDebounce`
@@ -311,6 +311,21 @@ Expliquer pourquoi `return () => clearTimeout(timer)` est indispensable dans ce 
 
 ```
 
+export function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
 ---
 
 ### Q4.4 — Preuve du debounce dans les DevTools réseau
@@ -319,7 +334,7 @@ Ouvrir l'onglet Réseau du navigateur, taper rapidement « phone » lettre par l
 Joindre une capture montrant qu'une seule requête est envoyée après la pause.
 
 <!-- RÉPONSE Q4.4 -->
-![Debounce réseau](docs/screenshots/step4-debounce.png)
+![Debounce réseau](docs/screenshots/Debounce%20réseau.png)
 
 ---
 
@@ -346,7 +361,13 @@ Quel problème survient si ces fonctions sont recréées à chaque rendu ?
 En quoi cela est-il particulièrement problématique quand elles sont passées via un contexte ?
 
 <!-- RÉPONSE Q5.1 -->
+useCallback évite de recréer les fonctions à chaque render,
 
+  à chaque render → nouvelles fonctions
+  React pense que ça change → re-render inutile
+
+Dans un Context, c’est pire :
+  -tous les composants utilisent ces fonctions
 ---
 
 ### Q5.2 — Pourquoi utiliser `useMemo` pour `cartCount` et `cartTotal` ?
@@ -354,6 +375,11 @@ En quoi cela est-il particulièrement problématique quand elles sont passées v
 Quelle est la différence entre `useMemo` et `useCallback` ?
 
 <!-- RÉPONSE Q5.2 -->
+useMemo évite de recalculer :
+  .cartCount
+  .cartTotal
+
+  -à chaque render =recalcul seulement si cart change
 
 ---
 
