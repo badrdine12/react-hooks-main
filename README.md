@@ -390,9 +390,23 @@ que d'ajouter un doublon.
 
 ```js
 // RÉPONSE Q5.3 — addToCart avec useCallback
+  // ✅ 3. addToCart
+  const addToCart = useCallback((product) => {
+    setCart((prev) => {
+      const exist = prev.find(item => item.id === product.id)
 
+      if (exist) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        )
+      } else {
+        return [...prev, { ...product, qty: 1 }]
+      }
+    })
+  }, [])
 ```
-
 ---
 
 ### Q5.4 — Preuve de la persistance localStorage
@@ -401,7 +415,7 @@ Ajouter 2-3 produits, rafraîchir la page (F5), vérifier que le panier est rest
 Joindre une capture de l'onglet Application > localStorage dans les DevTools.
 
 <!-- RÉPONSE Q5.4 -->
-![localStorage](docs/screenshots/step5-localstorage.png)
+![localStorage](docs/screenshots/localeStorage.png)
 
 ---
 

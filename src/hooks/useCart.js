@@ -13,22 +13,23 @@ export function useCart() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart))
   }, [cart])
 
-  // ✅ 3. addToCart
-  const addToCart = useCallback((product) => {
-    setCart((prev) => {
-      const exist = prev.find(item => item.id === product.id)
+const addToCart = useCallback((product) => {
+  console.log("ADD", product)
 
-      if (exist) {
-        return prev.map(item =>
-          item.id === product.id
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        )
-      } else {
-        return [...prev, { ...product, qty: 1 }]
-      }
-    })
-  }, [])
+  setCart((prev) => {
+    const exist = prev.find(item => item.id === product.id)
+
+    if (exist) {
+      return prev.map(item =>
+        item.id === product.id
+          ? { ...item, qty: item.qty + 1 }
+          : item
+      )
+    }
+
+    return [...prev, { ...product, qty: 1 }]
+  })
+}, [])
 
   // ✅ 4. remove
   const removeFromCart = useCallback((id) => {

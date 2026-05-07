@@ -1,7 +1,7 @@
 import ProductCard from "../ProductCard/ProductCard.jsx";
 import Pagination from "../Pagination/Pagination.jsx";
 import { useProducts, PAGE_SIZE } from "../../hooks/useProducts.js";
-// import { useCartContext } from '../../context/CartContext.jsx'
+import { useCartContext } from '../../context/CartContext.jsx'
 
 /**
  * ProductList — grille de produits avec pagination.
@@ -26,13 +26,15 @@ export default function ProductList({
     searchQuery,
     currentPage,
   );
+    // ✅ useContext
+    
+    // =============================================================
+    // TODO Étape 6 — useContext
+    // Remplacer la ligne ci-dessous par :
+    //   const { addToCart } = useCartContext()
+    // =============================================================
+    const { addToCart } = useCartContext();
 
-  // =============================================================
-  // TODO Étape 6 — useContext
-  // Remplacer la ligne ci-dessous par :
-  //   const { addToCart } = useCartContext()
-  // =============================================================
-  const addToCart = () => {};
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -62,7 +64,10 @@ export default function ProductList({
           <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
             {products.map((product) => (
               <div key={product.id} className="col">
-                <ProductCard product={product} onAddToCart={addToCart} />
+                <ProductCard
+                  product={product}
+                  onAddToCart={(product) => addToCart(product)}
+                />
               </div>
             ))}
           </div>
