@@ -437,13 +437,42 @@ Tracer le chemin qu'aurait dû suivre `addToCart` sans contexte (de `App` jusqu'
 Comparer avec le chemin avec `useContext`.
 
 <!-- RÉPONSE Q6.1 -->
+          App
+          └── ProductList
+                └── ProductCard
 
+          <App addToCart={addToCart} />
+          <ProductList addToCart={addToCart} />
+          <ProductCard onAddToCart={addToCart} />
+
+      Chaque composant intermédiaire doit recevoir puis retransmettre la prop,
+            même s’il ne l’utilise pas directement.
+    Avec useContext :
+      addToCart est stocké dans CartContext
+
+      ProductList, NavBar et CartModal peuvent y accéder directement avec :
+        CartContext
+                  ├── NavBar
+                  ├── ProductList
+                  └── CartModal
+      
+        Cela rend le code :
+            -plus propre
+            -plus maintenable
+            -plus simple à faire évoluer
 ---
 
 ### Q6.2 — Montrer l'appel à `useCartContext()` dans `CartModal`
 
 ```jsx
 // RÉPONSE Q6.2 — destructuration depuis useCartContext()
+    export function useCartContext() {
+      const context = useContext(CartContext)
+      if (!context) {
+        throw new Error('useCartContext doit être utilisé dans un CartProvider')
+      }
+      return context
+    }
 
 ```
 
@@ -455,9 +484,27 @@ Coller ici le JSX d'un `<li>` de la liste, avec le titre, la quantité, le prix 
 
 ```jsx
 // RÉPONSE Q6.3 — JSX d'un article du panier
+    <li
+  key={item.id}
+  className="list-group-item d-flex justify-content-between align-items-center"
+>
+  <div>
+    <span className="fw-semibold">{item.title}</span>
+    <br />
+    <small className="text-muted">
+      Qté : {item.qty} × {item.price.toFixed(2)} $
+    </small>
+  </div>
 
+  <button
+    className="btn btn-sm btn-outline-danger"
+    onClick={() => removeFromCart(item.id)}
+  >
+    <i className="bi bi-trash"></i>
+  </button>
+</li>
 ```
-
+ 
 ---
 
 ### Q6.4 — Capture d'écran : panier fonctionnel
@@ -467,7 +514,7 @@ Joindre une capture montrant : le badge correct sur le bouton, les articles list
 avec leurs quantités et le total affiché.
 
 <!-- RÉPONSE Q6.4 -->
-![Panier fonctionnel](docs/screenshots/step6-cart.png)
+![Panier fonctionnel](docs/screenshots/panier%20fonctionnel.png)
 
 ---
 
